@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "APEX PROPHET QUANTUM Terminal",
+  "version": "1.0",
+  "description": "Autonomous Machine-Learning Intraday Scanner Panel",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "logo.png"
+  }
+}
