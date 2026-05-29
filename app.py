@@ -722,14 +722,26 @@ def render_window(pool_key: str):
                     st.markdown("<span style='color:#00ff88;font-size:11px;font-weight:700;'>▲ BULLISH</span>",
                                 unsafe_allow_html=True)
                     d = bullish.head(p_lim)[["Asset","Live Price","Gain/Loss %","APS Rating"]]
-                    (st.dataframe(d, use_container_width=True, hide_index=True)
-                     if not d.empty else st.caption("None."))
+                    if not d.empty:
+    st.dataframe(
+        d,
+        use_container_width=True,
+        hide_index=True
+    )
+else:
+    st.caption("None.")
                 with rc:
                     st.markdown("<span style='color:#ff2255;font-size:11px;font-weight:700;'>▼ BEARISH</span>",
                                 unsafe_allow_html=True)
                     d2 = bearish.head(p_lim)[["Asset","Live Price","Gain/Loss %","APS Rating"]]
-                    (st.dataframe(d2, use_container_width=True, hide_index=True)
-                     if not d2.empty else st.caption("None."))
+                    if not d2.empty:
+    st.dataframe(
+        d2,
+        use_container_width=True,
+        hide_index=True
+    )
+else:
+    st.caption("None.")
 
                 if p_lim < len(scope):
                     if st.button(f"➕ LOAD MORE {pool_key}", key=f"more_{pool_key}",
