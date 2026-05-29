@@ -721,8 +721,9 @@ def render_window(pool_key: str):
                 with bc:
                     st.markdown("<span style='color:#00ff88;font-size:11px;font-weight:700;'>▲ BULLISH</span>",
                                 unsafe_allow_html=True)
-                    d = bullish.head(p_lim)[["Asset","Live Price","Gain/Loss %","APS Rating"]]
-                    if not d.empty:
+                  d = bullish.head(p_lim)[["Asset","Live Price","Gain/Loss %","APS Rating"]]
+
+if not d.empty:
     st.dataframe(
         d,
         use_container_width=True,
@@ -733,8 +734,9 @@ else:
                 with rc:
                     st.markdown("<span style='color:#ff2255;font-size:11px;font-weight:700;'>▼ BEARISH</span>",
                                 unsafe_allow_html=True)
-                    d2 = bearish.head(p_lim)[["Asset","Live Price","Gain/Loss %","APS Rating"]]
-                    if not d2.empty:
+                   d2 = bearish.head(p_lim)[["Asset","Live Price","Gain/Loss %","APS Rating"]]
+
+if not d2.empty:
     st.dataframe(
         d2,
         use_container_width=True,
