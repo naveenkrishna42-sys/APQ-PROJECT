@@ -691,8 +691,10 @@ def render_window(pool_key: str):
             cols = [c for c in ["Time","Asset","Direction","Entry","Target",
                                 "Stop","Current Price","Status","Close"]
                     if c in fds.columns]
-            (st.dataframe(fds[cols], use_container_width=True, hide_index=True)
-             if not fds.empty else st.caption("No predictions logged yet."))
+            if not fds.empty:
+                st.dataframe(fds[cols], use_container_width=True, hide_index=True)
+            else:
+                st.caption("No predictions logged yet.")
         else:
             st.caption("Run a scan to start tracking predictions.")
 
