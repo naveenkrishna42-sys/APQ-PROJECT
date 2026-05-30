@@ -133,6 +133,9 @@ def run_native_ai_audit(df: pd.DataFrame) -> pd.DataFrame:
 # ══════════════════════════════════════════════════════════════════════════════
 #  DATA RETRIEVAL SUBSYSTEM
 # ══════════════════════════════════════════════════════════════════════════════
+# ══════════════════════════════════════════════════════════════════════════════
+#  DATA RETRIEVAL SUBSYSTEM
+# ══════════════════════════════════════════════════════════════════════════════
 BASE_ASSETS = ["AAPL", "MSFT", "NVDA", "TSLA", "AMZN", "GOOGL", "META", "SPY", "QQQ", "GLD", "BTC-USD", "ETH-USD", "SOL-USD"]
 ALL_ACTIVE_ASSETS = list(dict.fromkeys(BASE_ASSETS + st.session_state.custom_pool))
 
@@ -143,12 +146,20 @@ def clean_symbol(sym):
 def fetch_ticker_data(ticker, period="1mo", interval="1d"):
     try:
         df = yf.download(ticker, period=period, interval=interval, progress=False, auto_adjust=True)
+        if df.empty:
+            return pd.DataFrame()
+            
+        # Ensure we flatten the multi-index properly
         if isinstance(df.columns, pd.MultiIndex):
-            df.columns = [c[0] for c in df.columns.get_level_values(0)]
+            df.columns = [c[0] for c in df.columns]
+            
+        # Final safety check before returning
+        if "Close" not in df.columns:
+            return pd.DataFrame()
+            
         return df.dropna()
     except Exception:
         return pd.DataFrame()
-
 # ══════════════════════════════════════════════════════════════════════════════
 #  UI STRUCTURE & HEADERS
 # ══════════════════════════════════════════════════════════════════════════════
@@ -200,7 +211,8 @@ with c2:
         rows = []
         for t in ALL_ACTIVE_ASSETS:
             df = fetch_ticker_data(t, "5d", "15m")
-            if not df.empty and len(df) >= 2:
+            # ADDED DEFENSIVE CHECK HERE: "Close" in df.columns
+            if not df.empty and len(df) >= 2 and "Close" in df.columns:
                 last_p = float(df["Close"].iloc[-1])
                 prev_p = float(df["Close"].iloc[-2])
                 pct = ((last_p - prev_p) / prev_p) * 100
@@ -225,9 +237,10 @@ def render_isolated_telemetry_corridor():
     change_pct = 0.0
     style_class = "val-up"
     
-    if not df_chart.empty:
+    # ADDED DEFENSIVE CHECK HERE: "Close" in df_chart.columns
+    if not df_chart.empty and len(df_chart) >= 2 and "Close" in df_chart.columns:
         current_price = float(df_chart["Close"].iloc[-1])
-        prev_price = float(df_chart["Close"].iloc[-2]) if len(df_chart) > 1 else current_price
+        prev_price = float(df_chart["Close"].iloc[-2])
         change_pct = ((current_price - prev_price) / prev_price) * 100
         if change_pct < 0:
             style_class = "val-down"
