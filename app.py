@@ -228,7 +228,7 @@ with c2:
 # ══════════════════════════════════════════════════════════════════════════════
 #  ISOLATED PRODUCTION STREAM RUNTIME FRAGMENT (ONLY THIS REFRESHES)
 # ══════════════════════════════════════════════════════════════════════════════
-@st.fragment(ttl=3)
+@st.fragment(run_every=3)
 def render_isolated_telemetry_corridor():
     focus_ticker = st.session_state.active_radar_ticker
     df_chart = fetch_ticker_data(focus_ticker, "5d", "5m")
